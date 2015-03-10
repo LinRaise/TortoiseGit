@@ -115,8 +115,6 @@ public:
 		return m_UnRevFiles;
 	}
 
-//	GitRev(GitRev &rev);
-//	GitRev &operator=(GitRev &rev);
 	int CheckAndParser()
 	{
 		if(!m_IsCommitParsed && m_GitCommit.m_pGitCommit)
