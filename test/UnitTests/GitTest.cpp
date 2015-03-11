@@ -22,6 +22,7 @@
 #include "StringUtils.h"
 #include "PathUtils.h"
 #include "DirFileEnum.h"
+#include "GitRev.h"
 
 enum config
 {
@@ -342,6 +343,28 @@ TEST_P(CBasicGitWithEmptyRepositoryFixture, IsInitRepos_GetInitAddList)
 	EXPECT_FALSE(m_Git.IsInitRepos());
 
 	EXPECT_STREQ(_T("master"), m_Git.GetCurrentBranch());
+}
+
+TEST_P(CBasicGitWithTestRepoFixture, CGitRev)
+{
+	g_Git.m_CurrentDir = m_Git.m_CurrentDir;
+	SetCurrentDirectory(m_Git.m_CurrentDir);
+	GitRev rev;
+	rev.GetCommit(_T("HEAD"));
+	EXPECT_STREQ(_T("Sven Strickroth"), rev.GetAuthorName());
+	EXPECT_STREQ(_T("Changed ASCII file"), rev.GetSubject());
+	EXPECT_STREQ(_T(""), rev.GetBody());
+	rev.Clear();
+	rev.GetCommit(_T("master2"));
+	EXPECT_STREQ(_T("Sven Strickroth"), rev.GetAuthorName());
+	EXPECT_STREQ(_T("change more files"), rev.GetSubject());
+	EXPECT_STREQ(_T(""), rev.GetBody());
+	rev.Clear();
+	rev.GetCommit(_T("1fc3c9688e27596d8717b54f2939dc951568f6cb"));
+	EXPECT_STREQ(_T("Some other User"), rev.GetAuthorName());
+	EXPECT_STREQ(_T("Added an ascii file"), rev.GetSubject());
+	EXPECT_STREQ(_T(""), rev.GetBody());
+	EXPECT_STREQ(_T(""), rev.m_Notes);
 }
 
 TEST_P(CBasicGitWithTestRepoFixture, IsInitRepos)
